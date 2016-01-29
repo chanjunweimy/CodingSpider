@@ -11,7 +11,12 @@ public class Crawler {
 	/**
 	 * file used to save the files in subdomains
 	 */
-	private final static String FILE_SUBDOMAINS = "subdomains.txt";
+	private final static String FILE_SUBDOMAINS = "Subdomains.txt";
+	
+	/**
+	 * file used to store stop words
+	 */
+	private final static String FILE_STOPWORDS = "StopWords.txt";
 	
 	/**
 	 * The set containing all the unique urls that are crawled
@@ -109,6 +114,10 @@ public class Crawler {
 	private static void countWordFrequency(File[] htmlFiles) {
 		// TODO Auto-generated method stub
 		
+		/**
+		 * do not forget to exclude the stopwords
+		 */
+		File stopWordsFile = new File(FILE_STOPWORDS);
 	}
 
 	/**
