@@ -52,6 +52,13 @@ public class Crawler {
 		return controller.getCrawledUrls();
 	}
 	
+	/**
+	 * helper method to write content to file
+	 * @param filename the file you want to write into
+	 * @param isAppend whether to overwrite the file
+	 * @param line the content that you want to write into
+	 * @return
+	 */
 	private static boolean writeToFile(String filename, boolean isAppend, String line) {
 		try (FileWriter fw = new FileWriter(filename, isAppend)) {
 			fw.write(line);
