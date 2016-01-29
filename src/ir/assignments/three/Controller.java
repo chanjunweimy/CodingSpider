@@ -1,6 +1,7 @@
 package ir.assignments.three;
 
-import java.util.ArrayList;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import edu.uci.ics.crawler4j.crawler.CrawlConfig;
 import edu.uci.ics.crawler4j.crawler.CrawlController;
@@ -21,7 +22,7 @@ public class Controller {
 	 * this precise string: UCI Inf141-CS121 crawler StudentID(s), where the last part 
 	 * is the eight-digit student ID of each team member, separated by one space.
 	 */
-	private final static String USER_AGENT_STRING = "UCI Inf141-CS121 crawler 13793954";
+	private final static String USER_AGENT_STRING = "UCI Inf141-CS121 crawler 13793954 63891041 31348951 23239917";
 	
 	/**
 	 * The folder stores everything that we obtained from crawling
@@ -37,38 +38,49 @@ public class Controller {
 	 * @return
 	 */
 	public boolean startController (String seedURL) {
-
+			CrawlerLibrary.resetCrawledUrls();
+		
 	        CrawlConfig config = getTheConfigOfTheCrawler();
 
+	        CrawlController controller = initializeController(config);
+	        if (controller == null) {
+	        	return false;
+	        }
 
-	        /*
-	         * Instantiate the controller for this crawl.
-	         */
-	        PageFetcher pageFetcher = new PageFetcher(config);
-	        RobotstxtConfig robotstxtConfig = new RobotstxtConfig();
-	        RobotstxtServer robotstxtServer = new RobotstxtServer(robotstxtConfig, pageFetcher);
-	        CrawlController controller;
-			try {
-				controller = new CrawlController(config, pageFetcher, robotstxtServer);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				return false;
-			}
-
-	        /*
+	        /**
 	         * For each crawl, you need to add some seed urls. These are the first
 	         * URLs that are fetched and then the crawler starts following links
 	         * which are found in these pages
 	         */
 	        controller.addSeed(seedURL);
 
-	        /*
+	        /**
 	         * Start the crawl. This is a blocking operation, meaning that your code
 	         * will reach the line after this only when crawling is finished.
 	         */
 	        controller.start(CrawlerLibrary.class, NUMBER_OF_CRAWLER);
 	        return CrawlerLibrary.getCrawledUrls() != null;
+	}
+
+	/**
+	 * @param config
+	 * @return
+	 */
+	public CrawlController initializeController(CrawlConfig config) {
+		/**
+		 * Instantiate the controller for this crawl.
+		 */
+		PageFetcher pageFetcher = new PageFetcher(config);
+		RobotstxtConfig robotstxtConfig = new RobotstxtConfig();
+		RobotstxtServer robotstxtServer = new RobotstxtServer(robotstxtConfig, pageFetcher);
+		CrawlController controller;
+		try {
+			controller = new CrawlController(config, pageFetcher, robotstxtServer);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+		return controller;
 	}
 
 	/**
@@ -82,7 +94,11 @@ public class Controller {
 		return config;
 	}
 	
-	public ArrayList<String> getCrawledUrls() {
+	public TreeSet<String> getCrawledUrls() {
 		return CrawlerLibrary.getCrawledUrls();
+	}
+	
+	public TreeMap<String, Integer> getSubDomains() {
+		return CrawlerLibrary.getSubDomains();
 	}
 }
