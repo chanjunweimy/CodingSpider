@@ -43,7 +43,7 @@ public class Crawler {
 		
 		//error happens
 		if (!controller.startController(seedURL)) {
-			return null;
+			return null;	
 		}
 		
 		_crawledUrls = controller.getCrawledUrls();
