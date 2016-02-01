@@ -17,3 +17,5 @@ proguard/
 
 # libraries
 *.jar
+
+html/

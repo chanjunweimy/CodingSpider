@@ -35,6 +35,11 @@ public class CrawlerLibrary extends WebCrawler {
 	public final static String DIRECTORY_HTML = "html/";
 	
 	/**
+	 * we store all file lengths of the html file here
+	 */
+	public final static String FILE_LENGTHS = "file_lengths.txt";
+	
+	/**
 	 * we save html files into text files
 	 */
 	private final static String HTML_SAVED_EXTENSION = ".txt";
@@ -48,12 +53,12 @@ public class CrawlerLibrary extends WebCrawler {
 	/**
 	 * Delimeters which separate my tag with the html file content
 	 */
-	private static final String DELIMETER = ":==:";
+	//private static final String DELIMETER = ":==:";
 	
 	/**
 	 * Delimeters which separate my tag with the html file content (specialy for outgoing links)
 	 */
-	private static final String DELIMETER_LINKS = "-==-";
+	//private static final String DELIMETER_LINKS = "-==-";
 	
 	/**
 	 * We need filters to help us filter out non html files
@@ -74,8 +79,9 @@ public class CrawlerLibrary extends WebCrawler {
 	@Override
 	public boolean shouldVisit(Page referringPage, WebURL url) {
 		String href = url.getURL().toLowerCase();
-		return !FILTERS.matcher(href).matches()
-                && href.contains(CRAWLING_SERVER);
+		return  !FILTERS.matcher(href).matches()
+                && 
+                href.contains(CRAWLING_SERVER);
 	}
 
 	/**
@@ -128,7 +134,7 @@ public class CrawlerLibrary extends WebCrawler {
 			String filename = getFileName();
 			
 			saveHtmlToFile(page, filename);
-		
+			
 			String url = page.getWebURL().getURL();
 			saveSubdomains(url);
 			_crawledUrls.add(url);
@@ -159,6 +165,9 @@ public class CrawlerLibrary extends WebCrawler {
 	 */
 	public void saveHtmlToFile(String text, String html, Set<WebURL> links, String url,
 			String filename) {
+		writeToFile(filename, false, url + System.lineSeparator());
+		writeToFile(filename, true, text);
+		/*
 		writeToFile(filename, false, "Url" + DELIMETER + url + "\n");
 		writeToFile(filename, true, "Text length" + DELIMETER + text.length() + "\n");
 		writeToFile(filename, true, "Text" + DELIMETER + text + "\n");
@@ -178,6 +187,7 @@ public class CrawlerLibrary extends WebCrawler {
 				}
 			}
 		}
+		*/
 	}
 
 	/**

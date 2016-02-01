@@ -49,6 +49,8 @@ public class Crawler {
 		_crawledUrls = controller.getCrawledUrls();
 		_subdomains = controller.getSubDomains();
 		
+		System.out.println(_crawledUrls);
+		
 		return controller.getCrawledUrls();
 	}
 	
@@ -74,7 +76,7 @@ public class Crawler {
 	public static void main (String[] args) {
 		long startTime = System.currentTimeMillis();
 
-		crawl(CrawlerLibrary.CRAWLING_SERVER);
+		crawl("http://ics.uci.edu");
 		
 		long endTime   = System.currentTimeMillis();
 		long totalTime = endTime - startTime;
