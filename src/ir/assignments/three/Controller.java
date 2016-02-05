@@ -15,14 +15,14 @@ public class Controller {
 	 * (Very important for politeness) Wait at least 600ms between page requests 
 	 * 	to the same subdomain. You need to set this in the crawler configuration.
 	 */
-	private final static int POLITENESS_DELAY = 600;
+	private final static int POLITENESS_DELAY = 1200;
 	
 	/**
 	 * (Very important for getting credit) Set the name of your crawler's User Agent to 
 	 * this precise string: UCI Inf141-CS121 crawler StudentID(s), where the last part 
 	 * is the eight-digit student ID of each team member, separated by one space.
 	 */
-	private final static String USER_AGENT_STRING = "UCI Inf141-CS121 crawler 13793954 63891041 31348951 23239917";
+	private final static String USER_AGENT_STRING = "UCI Inf141-CS121 crawler 63891041 31348951 23239917 13793954";
 	
 	/**
 	 * The folder stores everything that we obtained from crawling
@@ -58,7 +58,11 @@ public class Controller {
 	         * Start the crawl. This is a blocking operation, meaning that your code
 	         * will reach the line after this only when crawling is finished.
 	         */
-	        controller.start(CrawlerLibrary.class, NUMBER_OF_CRAWLER);
+	        controller.startNonBlocking(CrawlerLibrary.class, NUMBER_OF_CRAWLER);
+	        
+	        controller.waitUntilFinish();
+	        System.out.println("crawled finish!");
+
 	        return CrawlerLibrary.getCrawledUrls() != null;
 	}
 
@@ -91,6 +95,12 @@ public class Controller {
 		config.setCrawlStorageFolder(CRAWL_STORAGE_FOLDER);
 		config.setUserAgentString(USER_AGENT_STRING);
 		config.setPolitenessDelay(POLITENESS_DELAY);
+		config.setResumableCrawling(false);
+		config.setFollowRedirects(false);
+		config.setMaxDownloadSize(100000000);
+		config.setMaxPagesToFetch(44000);
+		config.setMaxOutgoingLinksToFollow(100);
+
 		return config;
 	}
 	

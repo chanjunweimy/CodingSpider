@@ -28,6 +28,11 @@ public class CrawlerLibrary extends WebCrawler {
 	 * every url that we crawled must contain this string
 	 */
 	public final static String CRAWLING_SERVER = "ics.uci.edu";
+	
+	/**
+	 * url that we blocked
+	 */
+	public final static String CRAWLING_BLOCK_SERVER = "duttgroup.ics.uci.edu";
 
 	/**
 	 * We store html files into this directory
@@ -43,6 +48,7 @@ public class CrawlerLibrary extends WebCrawler {
 	 * we save html files into text files
 	 */
 	private final static String HTML_SAVED_EXTENSION = ".txt";
+	
 	
 	
 	/**
@@ -79,9 +85,19 @@ public class CrawlerLibrary extends WebCrawler {
 	@Override
 	public boolean shouldVisit(Page referringPage, WebURL url) {
 		String href = url.getURL().toLowerCase();
+		if (_crawledUrls == null) {
+			resetCrawledUrls();
+		}
+		
 		return  !FILTERS.matcher(href).matches()
                 && 
-                href.contains(CRAWLING_SERVER);
+                href.contains(CRAWLING_SERVER)
+                &&
+                !href.contains(CRAWLING_BLOCK_SERVER)
+                &&
+                !_crawledUrls.contains(href)
+                &&
+                referringPage.getParseData() instanceof HtmlParseData;
 	}
 
 	/**
@@ -106,6 +122,7 @@ public class CrawlerLibrary extends WebCrawler {
 	 */
 	public void saveSubdomains(String url) {
 		url = url.replaceFirst("http://", "");
+		url = url.replaceFirst("https://", "");
 		url = url.replaceFirst("www.", "");
 		if (!url.startsWith(CRAWLING_SERVER)) {
 			
