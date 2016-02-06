@@ -220,7 +220,7 @@ public class Crawler {
 		System.err.println("sorted frequencies...");
 				
 		writeToFile(FILE_COMMON_WORDS, false, "");
-		for (int finalList = 0; finalList < CONSTANT_NUM_COMMON_WORDS; finalList++) {
+		for (int finalList = 0; finalList < Math.min(CONSTANT_NUM_COMMON_WORDS, frequencies.size()); finalList++) {
 			writeToFile(FILE_COMMON_WORDS, true, frequencies.get(finalList)
 					.toString() + System.lineSeparator());
 		}
