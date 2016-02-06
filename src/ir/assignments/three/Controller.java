@@ -22,7 +22,7 @@ public class Controller {
 	 * this precise string: UCI Inf141-CS121 crawler StudentID(s), where the last part 
 	 * is the eight-digit student ID of each team member, separated by one space.
 	 */
-	private final static String USER_AGENT_STRING = "UCI Inf141-CS121 crawler 63891041 31348951 23239917 13793954";
+	private final static String USER_AGENT_STRING = "UCI Inf141-CS121 crawler 31348951 23239917 13793954 63891041";
 	
 	/**
 	 * The folder stores everything that we obtained from crawling
@@ -98,7 +98,7 @@ public class Controller {
 		config.setResumableCrawling(false);
 		config.setFollowRedirects(false);
 		config.setMaxDownloadSize(100000000);
-		config.setMaxPagesToFetch(44000);
+		config.setMaxPagesToFetch(80000);
 		config.setMaxOutgoingLinksToFollow(100);
 
 		return config;

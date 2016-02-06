@@ -1,6 +1,7 @@
 package ir.assignments.three;
 
 import ir.assignments.two.a.Frequency;
+import ir.assignments.two.a.Utilities;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -9,9 +10,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
@@ -20,21 +21,9 @@ import java.util.TreeSet;
 
 public class Crawler {
 
-	private static class FrequencyComparator implements Comparator<Frequency> {
+	private static final int CONSTANT_NUM_COMMON_WORDS = 500;
 
-		public FrequencyComparator() {
-			// TODO Auto-generated constructor stub
-		}
-
-		@Override
-		public int compare(Frequency o1, Frequency o2) {
-			if (o1.getFrequency() != o2.getFrequency())
-				return o2.getFrequency() - o1.getFrequency();
-
-			return o1.getText().compareTo(o2.getText());
-		}
-
-	}
+	private static final String FILE_COMMON_WORDS = "CommonWords.txt";
 
 	/**
 	 * file used to save the files in subdomains
@@ -162,9 +151,8 @@ public class Crawler {
 	private static void countWordFrequency(File[] htmlFiles) {
 		// TODO Auto-generated method stub
 		String word;
-		ArrayList<String> stopWordsList = new ArrayList<String>();
-		ArrayList<String> wordList = new ArrayList<String>();
-
+		HashSet<String> stopWordsSet = new HashSet<String>();
+		
 		/**
 		 * do not forget to exclude the stopwords
 		 */
@@ -174,68 +162,66 @@ public class Crawler {
 			while (stopWords.hasNext()) {
 				word = stopWords.next();
 				word = word.toLowerCase();
-				word = word.replaceAll("[^a-z0-9 ]", "");
-				word = "\"" + word + "\"";
-				stopWordsList.add(word);
+				word = word.replaceAll("[^a-z0-9]", "");
+				stopWordsSet.add(word);
 			}
 			stopWords.close();
 		} catch (FileNotFoundException e) {
 			System.out.println("File not found");
 		}
+		
+		System.err.println("read stop words file...");
 
 		if (htmlFiles == null) {
 			System.out.println("No Files");
 			return;
 		}
-
+		
+		List<Frequency> frequencies = new ArrayList<Frequency>();
+		HashMap <String, Integer> hashEntry = new HashMap <String, Integer>();
+		
 		for (int each = 0; each < htmlFiles.length; each++) {
 			try (Scanner inFile = new Scanner(htmlFiles[each])) {
 
 				while (inFile.hasNext()) {
 					word = inFile.next();
 					word = word.toLowerCase();
-					word = word.replaceAll("[^a-z0-9 ]\"", "");
-					word = "\"" + word + "\"";
-					wordList.add(word);
-				}
-				for (int eachWord = 0; eachWord < wordList.size(); eachWord++) {
-					if (stopWordsList.contains(wordList.get(eachWord))) {
-						wordList.remove(wordList.get(eachWord));
+					word = word.replaceAll("[^a-z0-9]", "");
+					if (stopWordsSet.contains(word)) {
+						continue;
+					} else if (word.isEmpty()) {
+						continue;
+					}
+					
+					int index = frequencies.size();
+					if (!hashEntry.containsKey(word)) {
+						Integer indexInteger = new Integer(index);
+						hashEntry.put(word, indexInteger);
+						Frequency frequency = new Frequency(word);
+						frequency.incrementFrequency();
+						frequencies.add(frequency);
+					} else {
+						index = hashEntry.get(word).intValue();
+						Frequency frequency = frequencies.get(index);
+						frequency.incrementFrequency();
+						frequencies.set(index, frequency);
 					}
 				}
+				
 				inFile.close();
 			} catch (FileNotFoundException e) {
 				System.out.println("File not found");
 			}
 		}
-
-		Map<String, Integer> map = new HashMap<String, Integer>();
-		ArrayList<Frequency> frequencies = new ArrayList<Frequency>();
-
-		if (wordList.size() == 0)
-			System.out.println("No Words");
-
-		for (String finalWord : wordList) {
-			Integer value = map.get(finalWord);
-			if (value != null) {
-				map.put(finalWord, value + 1);
-			} else
-				map.put(finalWord, 1);
-		}
-
-		for (String lst : map.keySet()) {
-			frequencies.add(new Frequency(lst, map.get(lst)));
-		}
-
-		FrequencyComparator comparator = new FrequencyComparator();
-		Collections.sort(frequencies, comparator); // in alphabetical order
-
-		if (frequencies.isEmpty()) {
-			return;
-		}
+		System.err.println("read html files...");
 		
-		for (int finalList = 0; finalList < 500; finalList++) {
-			writeToFile("CommonWords.txt", true, frequencies.get(finalList)
+		Collections.sort(frequencies, new Utilities.SorterNGrams());
+
+		System.err.println("sorted frequencies...");
+				
+		writeToFile(FILE_COMMON_WORDS, false, "");
+		for (int finalList = 0; finalList < CONSTANT_NUM_COMMON_WORDS; finalList++) {
+			writeToFile(FILE_COMMON_WORDS, true, frequencies.get(finalList)
 					.toString() + System.lineSeparator());
 		}
 
@@ -302,7 +288,7 @@ public class Crawler {
 			Integer value = entry.getValue();
 			System.out.println(key + " => " + value);
 			String line = entry.getKey() + ":" + entry.getValue();
-			writeToFile("subdomains.txt", true, line);
+			writeToFile(FILE_SUBDOMAINS, true, line + System.lineSeparator());
 		}
 
 	}
