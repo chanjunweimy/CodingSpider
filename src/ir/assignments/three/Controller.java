@@ -15,7 +15,7 @@ public class Controller {
 	 * (Very important for politeness) Wait at least 600ms between page requests 
 	 * 	to the same subdomain. You need to set this in the crawler configuration.
 	 */
-	private final static int POLITENESS_DELAY = 1200;
+	private final static int POLITENESS_DELAY = 2400;
 	
 	/**
 	 * (Very important for getting credit) Set the name of your crawler's User Agent to 
