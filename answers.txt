@@ -1,4 +1,11 @@
-Put your answers to the questions here, on in a similarly named .doc or .pdf file.
+/**
+ * @author
+ * Amy Yeung
+ * Chan Jun Wei
+ * Laureen Ma 
+ * Matt Levin
+ */
+
 How much time did it take to crawl the entire domain?
 59509064
 How many unique pages did you find in the entire domain? (Uniqueness is established by the URL, not the page's content.)

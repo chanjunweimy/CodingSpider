@@ -1,3 +1,11 @@
+/**
+ * @author
+ * Amy Yeung
+ * Chan Jun Wei
+ * Laureen Ma 
+ * Matt Levin
+ */
+
 package ir.assignments.three;
 
 import java.io.FileWriter;
